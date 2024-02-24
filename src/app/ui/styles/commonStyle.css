@@ -1,0 +1,8 @@
+.edit-options {
+    display: none;
+}
+
+/* When hovering over the intro-container, display the edit-options */
+.base-container:hover .edit-options {
+    display: flex;
+}
