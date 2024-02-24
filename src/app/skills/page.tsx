@@ -1,6 +1,7 @@
 import { useAppMode } from "@/context/AppProviderContext";
+import { Skill } from "@/context/type";
 import { Card, CardBody } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { RiEditBoxLine } from "react-icons/ri";
@@ -10,18 +11,25 @@ import "../ui/styles/commonStyle.css";
 
 const Skills = ({ id }: ConnectProps) => {
   const { skills, setSkills, setSection, isEditMode } = useAppMode();
-  const [tempSkills] = useState(skills);
   const [isEditing, setIsEditing] = useState(true);
+  const [tempState, setTempState] = useState<{ skills: Skill[] }>({
+    skills: [],
+  });
+
+  useEffect(() => {
+    if (isEditing) {
+      setTempState({
+        skills: [...skills],
+      });
+    }
+  }, [isEditing]);
 
   // Handle skill edit toggle
   const toggleEditSkill = (index) => {
     setSkills(
-      skills.map((skill, i) => {
-        if (i === index) {
-          skill.isBeingEdited = !skill.isBeingEdited;
-        }
-        return skill;
-      })
+      skills.map((skill, i) =>
+        i === index ? { ...skill, isBeingEdited: !skill.isBeingEdited } : skill
+      )
     );
   };
 
@@ -114,7 +122,7 @@ const Skills = ({ id }: ConnectProps) => {
 
   const handleCancel = () => {
     setSkills(
-      tempSkills.map((skill) => {
+      tempState.skills.map((skill) => {
         return { ...skill, isBeingEdited: false };
       })
     );

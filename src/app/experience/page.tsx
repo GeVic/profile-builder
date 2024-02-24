@@ -1,11 +1,11 @@
 import { useAppMode } from "@/context/AppProviderContext";
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { RiEditBoxLine } from "react-icons/ri";
-import { ConnectProps } from "../type";
+import { ConnectProps, TempExpState } from "../type";
 import IconLayout from "../ui/components/iconLayout";
 import ImageUpload from "../ui/components/imageUpload";
 import "../ui/styles/commonStyle.css";
@@ -13,11 +13,24 @@ import "../ui/styles/commonStyle.css";
 const Experience = ({ id }: ConnectProps) => {
   const [sectionTitle, setSectionTitle] = useState("Experience");
   const [sectionDescription, setSectionDescription] = useState("");
-  const { cards, setCards, setSection, isEditMode } = useAppMode();
-  const [tempCard, setTempCards] = useState(cards);
-  const [tempTitle, setTempTitle] = useState(sectionTitle);
-  const [tempDescription, setTempDescription] = useState(sectionDescription);
+  const { cards, setCards, setSection } = useAppMode();
   const [isEditing, setIsEditing] = useState(true);
+
+  const [tempState, setTempState] = useState<TempExpState>({
+    cards: [],
+    sectionTitle: "",
+    sectionDescription: "",
+  });
+
+  useEffect(() => {
+    if (isEditing) {
+      setTempState({
+        cards: [...cards],
+        sectionTitle,
+        sectionDescription,
+      });
+    }
+  }, [isEditing]);
 
   const handleCardChange = (index, field, value) => {
     setCards(
@@ -51,12 +64,12 @@ const Experience = ({ id }: ConnectProps) => {
 
   const handleCancel = () => {
     setCards(
-      tempCard.map((card) => {
+      tempState.cards.map((card) => {
         return { ...card, isEditing: false };
       })
     );
-    setSectionTitle(tempTitle);
-    setSectionDescription(tempDescription);
+    setSectionTitle(tempState.sectionTitle);
+    setSectionDescription(tempState.sectionDescription);
     setIsEditing(false);
   };
 

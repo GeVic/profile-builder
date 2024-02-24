@@ -1,26 +1,37 @@
 import { useAppMode } from "@/context/AppProviderContext";
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { LuLink } from "react-icons/lu";
 import { RiEditBoxLine } from "react-icons/ri";
-import { ConnectProps } from "../type";
+import { ConnectProps, TempState } from "../type";
 import IconLayout from "../ui/components/iconLayout";
 import ImageUpload from "../ui/components/imageUpload";
 import "../ui/styles/commonStyle.css";
 
 const Projects = ({ id }: ConnectProps) => {
-  const { projects, setProjects, setSection, isEditMode } = useAppMode();
+  const { projects, setProjects, setSection } = useAppMode();
   const [sectionTitle, setSectionTitle] = useState("Projects");
   const [sectionDescription, setSectionDescription] = useState("");
-
   const [isEditing, setIsEditing] = useState(true);
 
-  const [tempProjects, setTempProjects] = useState(projects);
-  const [tempTitle, setTempTitle] = useState(sectionTitle);
-  const [tempDescription, setTempDescription] = useState(sectionDescription);
+  const [tempState, setTempState] = useState<TempState>({
+    projects: [],
+    sectionTitle: "",
+    sectionDescription: "",
+  });
+
+  useEffect(() => {
+    if (isEditing) {
+      setTempState({
+        projects: [...projects],
+        sectionTitle,
+        sectionDescription,
+      });
+    }
+  }, [isEditing]);
 
   // Toggles project edit mode
   const toggleEditProject = (id) => {
@@ -62,12 +73,12 @@ const Projects = ({ id }: ConnectProps) => {
 
   const handleCancel = () => {
     setProjects(
-      tempProjects.map((project) => {
+      tempState.projects.map((project) => {
         return { ...project, isBeingEdited: false };
       })
     );
-    setSectionTitle(tempTitle);
-    setSectionDescription(tempDescription);
+    setSectionTitle(tempState.sectionTitle);
+    setSectionDescription(tempState.sectionDescription);
     setIsEditing(false);
   };
 

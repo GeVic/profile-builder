@@ -1,28 +1,40 @@
 import { useAppMode } from "@/context/AppProviderContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { GoLinkExternal } from "react-icons/go";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { RiEditBoxLine } from "react-icons/ri";
-import { ConnectProps } from "../type";
+import { ConnectProps, TempConnectState } from "../type";
 import IconLayout from "../ui/components/iconLayout";
 import ImageUpload from "../ui/components/imageUpload";
 
 const Connect = ({ id }: ConnectProps) => {
   const [sectionTitle, setSectionTitle] = useState("Let's connect");
   const [sectionDescription, setSectionDescription] = useState("");
-  const [tempTitle, setTempTitle] = useState(sectionTitle);
-  const [tempDescription, setTempDescription] = useState(sectionDescription);
   const [image, setImage] = useState("/svg/default.svg");
   const [sectionSub, setSectionSub] = useState("");
   const [isEditing, setIsEditing] = useState(true);
-  const { setSection, isEditMode } = useAppMode();
+  const { setSection } = useAppMode();
+
+  const [tempState, setTempState] = useState<TempConnectState>({
+    sectionTitle: "",
+    sectionDescription: "",
+  });
+
+  useEffect(() => {
+    if (isEditing) {
+      setTempState({
+        sectionTitle,
+        sectionDescription,
+      });
+    }
+  }, [isEditing]);
 
   const handleCancel = () => {
-    setSectionTitle(tempTitle);
-    setSectionDescription(tempDescription);
+    setSectionTitle(tempState.sectionTitle);
+    setSectionDescription(tempState.sectionDescription);
     setIsEditing(false);
   };
 
