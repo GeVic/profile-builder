@@ -1,6 +1,7 @@
 import { useAppMode } from "@/context/AppProviderContext";
 import { Card, CardBody, CardHeader } from "@nextui-org/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { AiOutlineDelete } from "react-icons/ai";
 import { IoReorderThreeOutline } from "react-icons/io5";
@@ -256,7 +257,9 @@ const Projects = ({ id }: ConnectProps) => {
                   // Static content
                   <>
                     <span>{project.title}</span>
-                    <span className="text-gray-400">{project.link}</span>
+                    <Link href={project.link} className="text-gray-400">
+                      {project.link}
+                    </Link>
                     <p>{project.description}</p>
                   </>
                 )}

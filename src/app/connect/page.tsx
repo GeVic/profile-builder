@@ -135,7 +135,7 @@ const Connect = ({ id }: ConnectProps) => {
                 onChange={(e) => setSectionSub(e.target.value)}
                 placeholder="Enter subtext"
                 className="bg-transparent resize-none"
-              />
+              />  
             </>
           ) : (
             <>
